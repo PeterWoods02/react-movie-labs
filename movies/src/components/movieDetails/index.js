@@ -110,7 +110,7 @@ const MovieDetails = ({ movie }) => {  // Don't miss this!
         onClick={handleNavigateToRecommended} 
         sx={{ marginTop: '16px' }}
       >
-        View Recommended Movies
+        View Similar Movies
       </Button>
       </>
   );
