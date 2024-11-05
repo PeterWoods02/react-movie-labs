@@ -9,9 +9,9 @@ import Fab from "@mui/material/Fab";
 import Typography from "@mui/material/Typography";
 import Drawer from "@mui/material/Drawer";
 import MovieReviews from "../movieReviews"
-import RecommendedMovies from "../recommendedMovies"; 
 import Button from "@mui/material/Button";
 import { useNavigate } from "react-router-dom"; 
+import MovieActors from "../movieActors";
 
 
 
@@ -103,6 +103,10 @@ const MovieDetails = ({ movie }) => {  // Don't miss this!
       <Drawer anchor="top" open={drawerOpen} onClose={() => setDrawerOpen(false)}>
         <MovieReviews movie={movie} />
       </Drawer>
+
+
+      <MovieActors movieId={movie.id} /> 
+       
       
       <Button 
         variant="contained" 
