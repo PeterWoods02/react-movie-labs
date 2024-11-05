@@ -9,6 +9,10 @@ import Fab from "@mui/material/Fab";
 import Typography from "@mui/material/Typography";
 import Drawer from "@mui/material/Drawer";
 import MovieReviews from "../movieReviews"
+import RecommendedMovies from "../recommendedMovies"; 
+import Button from "@mui/material/Button";
+import { useNavigate } from "react-router-dom"; 
+
 
 
 const root = {
@@ -23,6 +27,13 @@ const chip = { margin: 0.5 };
 
 const MovieDetails = ({ movie }) => {  // Don't miss this!
     const [drawerOpen, setDrawerOpen] = useState(false);
+
+    const navigate = useNavigate(); 
+
+    const handleNavigateToRecommended = () => {
+        navigate(`/movies/${movie.id}/recommendations`); // navigate to the recommended movies page
+    };
+    
 
   return (
     <>
@@ -92,6 +103,15 @@ const MovieDetails = ({ movie }) => {  // Don't miss this!
       <Drawer anchor="top" open={drawerOpen} onClose={() => setDrawerOpen(false)}>
         <MovieReviews movie={movie} />
       </Drawer>
+      
+      <Button 
+        variant="contained" 
+        color="primary" 
+        onClick={handleNavigateToRecommended} 
+        sx={{ marginTop: '16px' }}
+      >
+        View Recommended Movies
+      </Button>
       </>
   );
 };
