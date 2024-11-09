@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import Card from "@mui/material/Card";
 import CardMedia from "@mui/material/CardMedia";
 import CardContent from "@mui/material/CardContent";
@@ -9,10 +9,11 @@ import TextField from "@mui/material/TextField";
 import SearchIcon from "@mui/icons-material/Search";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
-import img from "../../images/pexels-dziana-hasanbekava-5480827.jpg";
+import Rating from "@mui/material/Rating"; // Import the Rating component
 import { getGenres } from "../../api/tmdb-api";
 import { useQuery } from "react-query";
 import Spinner from "../spinner";
+import img from "../../images/pexels-dziana-hasanbekava-5480827.jpg";
 
 const formControl = {
   margin: 1,
@@ -21,7 +22,8 @@ const formControl = {
 };
 
 export default function FilterMoviesCard(props) {
-  // Use useQuery to fetch genres data
+  const [localRating, setLocalRating] = useState(props.ratingFilter / 10 || 0); // Initialize local rating
+
   const { data, error, isLoading, isError } = useQuery(
     "genres", // Query key
     getGenres, // Fetch function
@@ -66,6 +68,13 @@ export default function FilterMoviesCard(props) {
     handleChange(e, "genre", e.target.value);
   };
 
+  // Handle changes in the rating
+  const handleRatingChange = (e, newValue) => {
+    setLocalRating(newValue); // Update local rating state
+    const rating = (newValue / 5) * 10; // Convert to 0-10 scale
+    props.onUserInput("rating", rating.toFixed(1)); // Pass the rating to the parent
+  };
+
   return (
     <Card sx={{ backgroundColor: "rgb(204, 204, 0)" }} variant="outlined">
       <CardContent>
@@ -74,6 +83,7 @@ export default function FilterMoviesCard(props) {
           Filter the movies.
         </Typography>
 
+        {/* Search by Title */}
         <TextField
           sx={{ ...formControl }}
           id="filled-search"
@@ -84,6 +94,7 @@ export default function FilterMoviesCard(props) {
           onChange={handleTextChange}
         />
 
+        {/* Genre Select */}
         <FormControl sx={{ ...formControl }}>
           <InputLabel id="genre-label">Genre</InputLabel>
           <Select
@@ -92,22 +103,33 @@ export default function FilterMoviesCard(props) {
             value={props.genreFilter}
             onChange={handleGenreChange}
           >
-            {genres.map((genre) => {
-              return (
-                <MenuItem key={genre.id} value={genre.id}>
-                  {genre.name}
-                </MenuItem>
-              );
-            })}
+            {genres.map((genre) => (
+              <MenuItem key={genre.id} value={genre.id}>
+                {genre.name}
+              </MenuItem>
+            ))}
           </Select>
         </FormControl>
+
+        {/* Star Rating Filter */}
+        <Typography variant="subtitle1">
+          Rating ({props.ratingFilter || "0"} - 10)
+        </Typography>
+        <Rating
+          name="rating-filter"
+          value={localRating} // Use localRating state here
+          onChange={handleRatingChange}
+          precision={0.5} // Allow half stars
+        />
       </CardContent>
+
+      {/* Card Image */}
       <CardMedia sx={{ height: 300 }} image={img} title="Filter" />
+
       <CardContent>
         <Typography variant="h5" component="h1">
           <SearchIcon fontSize="large" />
           Filter the movies.
-          <br />
         </Typography>
       </CardContent>
     </Card>
