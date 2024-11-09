@@ -1,4 +1,4 @@
-import React  from "react";
+import React from "react";
 import Card from "@mui/material/Card";
 import CardMedia from "@mui/material/CardMedia";
 import CardContent from "@mui/material/CardContent";
@@ -9,77 +9,89 @@ import TextField from "@mui/material/TextField";
 import SearchIcon from "@mui/icons-material/Search";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
-import img from '../../images/pexels-dziana-hasanbekava-5480827.jpg'
+import img from "../../images/pexels-dziana-hasanbekava-5480827.jpg";
 import { getGenres } from "../../api/tmdb-api";
 import { useQuery } from "react-query";
-import Spinner from '../spinner'
+import Spinner from "../spinner";
 
-const formControl = 
-  {
-    margin: 1,
-    minWidth: 220,
-    backgroundColor: "rgb(255, 255, 255)"
-  };
+const formControl = {
+  margin: 1,
+  minWidth: 220,
+  backgroundColor: "rgb(255, 255, 255)",
+};
 
 export default function FilterMoviesCard(props) {
+  // Use useQuery to fetch genres data
+  const { data, error, isLoading, isError } = useQuery(
+    "genres", // Query key
+    getGenres, // Fetch function
+    {
+      staleTime: 1000 * 60 * 60 * 24, // Cache for 24 hours
+      cacheTime: 1000 * 60 * 60 * 24, // Cache for 24 hours
+      refetchOnWindowFocus: false, // Prevent refetching when window is focused
+    }
+  );
 
-  const { data, error, isLoading, isError } = useQuery("genres", getGenres);
-
+  // Handle loading state
   if (isLoading) {
     return <Spinner />;
   }
 
+  // Handle error state
   if (isError) {
     return <h1>{error.message}</h1>;
   }
-  const genres = data.genres;
-  if (genres[0].name !== "All"){
+
+  // Ensure genres is defined before accessing it
+  const genres = data ? data.genres : [];
+
+  // Ensure the "All" option is at the beginning of the list
+  if (genres.length > 0 && genres[0].name !== "All") {
     genres.unshift({ id: "0", name: "All" });
   }
 
+  // Event handler for changes in the filter inputs
   const handleChange = (e, type, value) => {
     e.preventDefault();
-    props.onUserInput(type, value); // NEW
+    props.onUserInput(type, value); // Pass input changes to parent component
   };
 
-  const handleTextChange = (e, props) => {
+  // Handle changes in the text field
+  const handleTextChange = (e) => {
     handleChange(e, "name", e.target.value);
   };
 
+  // Handle changes in the genre select dropdown
   const handleGenreChange = (e) => {
     handleChange(e, "genre", e.target.value);
   };
 
-
   return (
-    <Card 
-      sx={{
-        backgroundColor: "rgb(204, 204, 0)"
-      }} 
-      variant="outlined">
+    <Card sx={{ backgroundColor: "rgb(204, 204, 0)" }} variant="outlined">
       <CardContent>
         <Typography variant="h5" component="h1">
           <SearchIcon fontSize="large" />
           Filter the movies.
         </Typography>
+
         <TextField
-      sx={{...formControl}}
-      id="filled-search"
-      label="Search field"
-      type="search"
-      variant="filled"
-      value={props.titleFilter}
-      onChange={handleTextChange}
-    />
-        <FormControl sx={{...formControl}}>
+          sx={{ ...formControl }}
+          id="filled-search"
+          label="Search field"
+          type="search"
+          variant="filled"
+          value={props.titleFilter}
+          onChange={handleTextChange}
+        />
+
+        <FormControl sx={{ ...formControl }}>
           <InputLabel id="genre-label">Genre</InputLabel>
           <Select
-    labelId="genre-label"
-    id="genre-select"
-    defaultValue=""
-    value={props.genreFilter}
-    onChange={handleGenreChange}
-  >
+            labelId="genre-label"
+            id="genre-select"
+            value={props.genreFilter}
+            onChange={handleGenreChange}
+          >
             {genres.map((genre) => {
               return (
                 <MenuItem key={genre.id} value={genre.id}>
@@ -90,11 +102,7 @@ export default function FilterMoviesCard(props) {
           </Select>
         </FormControl>
       </CardContent>
-      <CardMedia
-        sx={{ height: 300 }}
-        image={img}
-        title="Filter"
-      />
+      <CardMedia sx={{ height: 300 }} image={img} title="Filter" />
       <CardContent>
         <Typography variant="h5" component="h1">
           <SearchIcon fontSize="large" />

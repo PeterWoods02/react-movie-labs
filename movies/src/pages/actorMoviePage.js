@@ -10,7 +10,12 @@ const ActorMoviePage = () => {
   const { actorId } = useParams(); // Get actorId from URL
   const { data: actorMovies, isLoading, isError, error } = useQuery(
     ["actorMovies", actorId], // Use actorId as part of the query key
-    () => getActorMovies(actorId) // Fetch movies for the actor
+    () => getActorMovies(actorId), // Fetch movies for the actor
+    {
+      staleTime: 1000 * 60 * 60 * 24, // Cache data for 24 hours
+      cacheTime: 1000 * 60 * 60 * 24, // Cache data for 24 hours
+      refetchOnWindowFocus: false, // Do not refetch on window focus
+    }
   );
 
   const [sortedMovies, setSortedMovies] = useState([]);

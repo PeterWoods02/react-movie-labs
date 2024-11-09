@@ -12,7 +12,12 @@ const MovieActors = () => {
     const { id } = useParams(); //useParams to get the movie ID from the URL
     const { data: movieActors, isLoading, isError, error } = useQuery(
         ['movieActors', id], // make id into query too
-        () => getMovieActors(id) 
+        () => getMovieActors(id), 
+        {
+          staleTime: 1000 * 60 * 60 * 24, // Cache data for 24 hours
+          cacheTime: 1000 * 60 * 60 * 24, // Cache data for 24 hours
+          refetchOnWindowFocus: false, // Do not refetch on window focus
+        } 
     );
 
     if (isLoading) {
