@@ -20,7 +20,8 @@ import ActorMoviePage from "./pages/actorMoviePage";
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      staleTime: 360000,
+      staleTime: 1000 * 60 * 60 * 24,
+      cacheTime: 1000 * 60 * 60 * 24, // Keep data in cache for a long time
       refetchInterval: 360000, 
       refetchOnWindowFocus: false
     },
