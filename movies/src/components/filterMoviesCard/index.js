@@ -2,101 +2,113 @@ import React, { useState } from "react";
 import { useQuery } from "react-query";
 import {
   Card, CardContent, Typography, InputLabel, MenuItem, TextField,
-  FormControl, Select, Rating, Button
+  FormControl, Select, Rating, Button, Menu
 } from "@mui/material";
-import SearchIcon from "@mui/icons-material/Search";
+import FilterListIcon from "@mui/icons-material/FilterList";  // Import Filter Icon
 import { getGenres, getActorByName, fetchActorId } from "../../api/tmdb-api";
 import Spinner from "../spinner";
 
 const formControl = { margin: 1, minWidth: 220, backgroundColor: "rgb(255, 255, 255)" };
 
-export default function FilterMoviesCard({ titleFilter, genreFilter, ratingFilter, onUserInput }) {
-  // State to handle the rating filter
+export default function FilterMoviesCard({ titleFilter, genreFilter, ratingFilter, onUserInput,sortOption,
+  onSortChange }) {
   const [localRating, setLocalRating] = useState(ratingFilter / 10 || 0);
-  
-  // State to handle the search term for actor search
   const [searchTerm, setSearchTerm] = useState("");
-  
-  // State to filter the actor's data based on user input
   const [actorFilter, setActorFilter] = useState("");
-  
-  // State to handle actor search status (idle, searching)
   const [actorSearchStatus, setActorSearchStatus] = useState("idle");
+  const [anchorEl, setAnchorEl] = useState(null);  // State for anchor element (for the dropdown)
 
-  // Fetch genres for dropdown from the API
+
   const { data: genreData, isLoading: genreLoading, isError: genreIsError } = useQuery(
     "genres", getGenres, { staleTime: 1000 * 60 * 60 * 24, cacheTime: 1000 * 60 * 60 * 24, refetchOnWindowFocus: false }
   );
 
-  // Fetch actor data based on search term from the API
   const { data: actorData, isLoading: actorLoading, isError: actorIsError } = useQuery(
     ["actorByName", actorFilter], () => getActorByName(actorFilter), {
       staleTime: 1000 * 60 * 60 * 24,
       cacheTime: 1000 * 60 * 60 * 24,
       refetchOnWindowFocus: false,
-      enabled: actorSearchStatus === "searching" && actorFilter.length > 0, // Only trigger if searching
+      enabled: actorSearchStatus === "searching" && actorFilter.length > 0,
     }
   );
 
-  // Show a loading spinner if genres or actors are still loading
   if (genreLoading || actorLoading) return <Spinner />;
-  
-  // Show an error message if fetching genres or actor data fails
   if (genreIsError || actorIsError) return <h1>Error loading data</h1>;
 
-  // Extract genres and ensure "All" is the first option in the dropdown
   const genres = genreData?.genres || [];
   if (genres.length && genres[0].name !== "All") genres.unshift({ id: "0", name: "All" });
-
-  // Extract actor list from the search results
   const actorsList = actorData?.results || [];
 
-  // Handle the click event for actor search
   const handleSearchClick = async () => {
-    if (!searchTerm.trim()) return;  // If search term is empty, return early
+    if (!searchTerm.trim()) return;
 
     setActorSearchStatus("searching");
-    setActorFilter(searchTerm); // Set the actor search term
-
+    setActorFilter(searchTerm);
     try {
-      // Fetch actor details by name
       const actorData = await fetchActorId(searchTerm);
       if (actorData?.results?.length) {
         const selectedActor = actorData.results[0];
-        onUserInput("actor", selectedActor.id); // Update parent component with selected actor's ID
+        onUserInput("actor", selectedActor.id);
       } else {
-        onUserInput("actor", null); // If no actor found, pass null
+        onUserInput("actor", null);
       }
     } catch {
-      onUserInput("actor", null); // In case of error, pass null
+      onUserInput("actor", null);
     }
   };
+
+  // Open the menu (dropdown)
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);  // Set the anchor for the menu
+  };
+
+  // Close the menu (dropdown)
+  const handleClose = () => {
+    setAnchorEl(null);  // Close the menu
+  };
+
+  // Handle sorting option change from dropdown
+  const handleSortChange = (option) => {
+    onSortChange(option);  // Call the parent function to update the sort option
+    handleClose();  // Close the menu after selection
+  };
+
+
 
   return (
     <Card sx={{ backgroundColor: "rgb(204, 204, 0)" }} variant="outlined">
       <CardContent>
-        {/* Header with search icon */}
         <Typography variant="h5" component="h1">
-          <SearchIcon fontSize="large" /> Filter the movies.
+          <FilterListIcon fontSize="large" onClick={handleClick} style={{ cursor: "pointer" }} /> Filter the movies.
         </Typography>
 
-        {/* TextField for searching by movie title */}
+        {/* Sorting Dropdown */}
+       <Menu
+          anchorEl={anchorEl}
+          open={Boolean(anchorEl)}
+          onClose={handleClose}
+        >
+           <MenuItem onClick={() => handleSortChange("a-z")}>a-z</MenuItem>
+          <MenuItem onClick={() => handleSortChange("z-a")}>z-a</MenuItem>
+          <MenuItem onClick={() => handleSortChange("highestRated")}>Highest Rated</MenuItem>
+          <MenuItem onClick={() => handleSortChange("recentlyReleased")}>Recently Released</MenuItem>
+        </Menu>
+
         <TextField
           sx={formControl}
           label="Search field"
           type="search"
           variant="filled"
           value={titleFilter}
-          onChange={(e) => onUserInput("name", e.target.value)} // Update parent on title filter change
+          onChange={(e) => onUserInput("name", e.target.value)}
         />
 
-        {/* Dropdown menu for selecting genre */}
         <FormControl sx={formControl}>
           <InputLabel id="genre-label">Genre</InputLabel>
           <Select
             labelId="genre-label"
             value={genreFilter}
-            onChange={(e) => onUserInput("genre", e.target.value)} // Update parent on genre filter change
+            onChange={(e) => onUserInput("genre", e.target.value)}
           >
             {genres.map((genre) => (
               <MenuItem key={genre.id} value={genre.id}>{genre.name}</MenuItem>
@@ -104,28 +116,25 @@ export default function FilterMoviesCard({ titleFilter, genreFilter, ratingFilte
           </Select>
         </FormControl>
 
-        {/* Display rating filter */}
         <Typography variant="subtitle1">Rating ({ratingFilter || "0"} - 10)</Typography>
         <Rating
           name="rating-filter"
           value={localRating}
           onChange={(e, newValue) => {
-            setLocalRating(newValue); // Update local rating
-            onUserInput("rating", ((newValue / 5) * 10).toFixed(1)); // Update parent with rating value
+            setLocalRating(newValue);
+            onUserInput("rating", ((newValue / 5) * 10).toFixed(1));
           }}
           precision={0.5}
         />
 
-        {/* TextField for searching by actor */}
         <TextField
           sx={formControl}
           label="Search by Actor"
           value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)} // Update search term as user types
+          onChange={(e) => setSearchTerm(e.target.value)}
           variant="filled"
         />
 
-        {/* Show actor suggestions if search term matches */}
         {searchTerm && actorsList.length > 0 && (
           <div style={{ maxHeight: "200px", overflowY: "auto" }}>
             {actorsList.map((actor) => (
@@ -133,9 +142,9 @@ export default function FilterMoviesCard({ titleFilter, genreFilter, ratingFilte
                 key={actor.id}
                 value={actor.id}
                 onClick={() => {
-                  setActorFilter(actor.id); // Set actor filter
-                  setSearchTerm(actor.name); // Set search term to actor's name
-                  onUserInput("actor", actor.id); // Update parent with selected actor's ID
+                  setActorFilter(actor.id);
+                  setSearchTerm(actor.name);
+                  onUserInput("actor", actor.id);
                 }}
               >
                 {actor.name}
@@ -144,12 +153,13 @@ export default function FilterMoviesCard({ titleFilter, genreFilter, ratingFilte
           </div>
         )}
 
-        {/* Search button to trigger actor search */}
+       
+
         <Button
           sx={{ paddingTop: "16px" }}
           variant="contained"
           color="primary"
-          onClick={handleSearchClick} // Trigger actor search on click
+          onClick={handleSearchClick}
         >
           Search
         </Button>

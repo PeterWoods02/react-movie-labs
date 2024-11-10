@@ -11,6 +11,7 @@ function MovieListPageTemplate({ movies, title, action }) {
   const [genreFilter, setGenreFilter] = useState("0");  // Genre filter
   const [actorId, setActorId] = useState(null);  // Actor ID for fetching actor's movies
   const [ratingFilter, setRatingFilter] = useState(0);  // Rating filter
+  const [sortOption, setSortOption] = useState("");  // Sort option
 
   const genreId = Number(genreFilter);  // Convert genre filter to number
 
@@ -24,8 +25,28 @@ function MovieListPageTemplate({ movies, title, action }) {
   const { data: actorMovies, isLoading, isError, error } = useQuery(
     ["actorMovies", actorId], 
     () => getMoviesForActor(actorId),
-    { enabled: !!actorId }
+    { enabled: !!actorId,
+      staleTime: 1000 * 60 * 60 * 24,  // Cache for a day
+      cacheTime: 1000 * 60 * 60 * 24,
+     }
   );
+
+
+  // Sort movies based on selected sort option
+  const sortMovies = (movies) => {
+    switch (sortOption) {
+      case "highestRated":
+        return [...movies].sort((a, b) => b.vote_average - a.vote_average);
+      case "a-z":
+        return [...movies].sort((a, b) => a.title.localeCompare(b.title));
+      case "z-a":
+        return [...movies].sort((a, b) => b.title.localeCompare(a.title));
+      case "recentlyReleased":
+        return [...movies].sort((a, b) => new Date(b.release_date) - new Date(a.release_date));
+      default:
+        return movies;
+    }
+  };
 
   // Filter movies based on selected filters
   const filteredMovies = (actorMovies || movies).filter((movie) => {
@@ -35,6 +56,11 @@ function MovieListPageTemplate({ movies, title, action }) {
 
     return matchesName && matchesGenre && matchesRating;
   });
+
+  const sortedMovies = sortMovies(filteredMovies);  // Apply sorting after filtering
+
+
+
 
   if (isLoading) return <div>Loading actor's movies...</div>;
   if (isError) return <div>Error: {error.message}</div>;
@@ -52,9 +78,11 @@ function MovieListPageTemplate({ movies, title, action }) {
             genreFilter={genreFilter}
             actorFilter={actorId}
             ratingFilter={ratingFilter}
+            sortOption={sortOption}
+            onSortChange={setSortOption}
           />
         </Grid>
-        <MovieList action={action} movies={filteredMovies} />
+        <MovieList action={action} movies={sortedMovies} />
       </Grid>
     </Grid>
   );
