@@ -11,6 +11,8 @@ export const getMovies = () => {
      throw error
   });
 };
+
+
   
 export const getMovie = (args) => {
   // console.log(args)
@@ -44,6 +46,8 @@ export const getMovie = (args) => {
       throw error
    });
   };
+
+  
   
   export const getMovieImages = ({ queryKey }) => {
     const [, idPart] = queryKey;
@@ -164,6 +168,90 @@ export const getActorMovies = (actorId) => {
       throw error;
     });
 };
+
+export const getActorByName = (actorName) => {
+  return fetch(
+    `https://api.themoviedb.org/3/search/person?api_key=${process.env.REACT_APP_TMDB_KEY}&query=${actorName}&page=1&include_adult=false`
+  )
+    .then((response) => response.json())
+    .then((data) => {
+      if (data.results && data.results.length > 0) {
+        return data.results[0]; // Assuming the first result is the actor we're looking for
+      } else {
+        throw new Error("Actor not found");
+      }
+    })
+    .catch((error) => {
+      throw error;
+    });
+};
+
+
+
+
+// Fetch movies by actor ID
+export const getMoviesForActor = (actorId) => {
+  return fetch(
+    `https://api.themoviedb.org/3/person/${actorId}/movie_credits?api_key=${process.env.REACT_APP_TMDB_KEY}&language=en-US`
+  )
+    .then((response) => response.json())
+    .then((data) => {
+      return data.cast; // Return the list of movies the actor has been in
+    })
+    .catch((error) => {
+      throw error;
+    });
+};
+
+
+// Fetch actor's movies by name
+export const getActorMoviesByName = async (actorName) => {
+  try {
+    const actor = await getActorByName(actorName);  // Step 1: Get actor details by name
+    const movies = await getMoviesForActor(actor.id);  // Step 2: Get actor's movies using their ID
+    return movies;  // Returns the movies array
+  } catch (error) {
+    console.error("Error fetching actor movies:", error);
+    return [];
+  }
+};
+
+
+
+
+
+
+export const getActorAndMovies = async (actorName) => {
+  try {
+    // Step 1: Search for the actor by name
+    const actor = await getActorByName(actorName);
+    
+    // Step 2: Get the movies for the actor using their ID
+    const movies = await getMoviesForActor(actor.id);
+    
+    return movies; // Return the list of movies
+  } catch (error) {
+    console.error("Error fetching actor movies:", error);
+  }
+};
+
+// api.js
+export const fetchActorId = async (actorName) => {
+  try {
+    const response = await fetch(`https://api.themoviedb.org/3/search/person?query=${actorName}&api_key=${process.env.REACT_APP_TMDB_KEY}&query=${actorName}&page=1&include_adult=false`
+);
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error('Error fetching actor:', error);
+    throw error;  // Re-throw the error to be handled by the caller
+  }
+};
+
+
+
+
+
 
 
   
