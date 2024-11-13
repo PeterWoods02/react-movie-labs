@@ -16,6 +16,7 @@ import TrendingMovies from "./pages/trendingMovies";
 import RecommendedMovies from "./components/recommendedMovies"; 
 import MovieActors from "./components/movieActors"; 
 import ActorMoviePage from "./pages/actorMoviePage";
+import HomePageLogIn from "./pages/homePageLogIn"; // Your home page with authentication
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -35,7 +36,10 @@ const App = () => {
         <SiteHeader />
         <MoviesContextProvider>
           <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/movies/home" element={<HomePage />} />
             <Route path="/movies/favorites" element={<FavoriteMoviesPage />} />
+            <Route path="/movies/homePageLogIn" element={<HomePageLogIn />} />
             <Route path="/movies/upcoming" element={<UpcomingMoviesPage />} />
             <Route path="/movies/topRated" element={<TopRatedMovies />} />
             <Route path="/movies/trending" element={<TrendingMovies/>} />
@@ -44,7 +48,6 @@ const App = () => {
             <Route path="/movies/:id/recommendations" element={<RecommendedMovies />} />
             <Route path="/movies/:id/actors" element={<MovieActors />} />
             <Route path="/actor/:actorId/movies" element={<ActorMoviePage />} />
-            <Route path="/" element={<HomePage />} />
             <Route path="*" element={ <Navigate to="/" /> } />
             <Route path="/reviews/form" element={ <AddMovieReviewPage /> } />
           </Routes>

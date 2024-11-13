@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "firebase": "^11.0.1",
     "react-query": "^3.39.3"
   }
 }
