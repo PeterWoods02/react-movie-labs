@@ -30,6 +30,7 @@ export const getMovie = (args) => {
     throw error
  });
 };
+
   
   export const getGenres = async () => {
     return fetch(
