@@ -32,13 +32,28 @@ export default function MovieCard({ movie, action }) {
   return (
     <Card>
       <CardHeader
-        
-        title={
-          <Typography variant="h5" component="p">
-            {movie.title}{" "}
-          </Typography>
-        }
-      />
+       title={
+        <Typography 
+              variant="h5" 
+              component="p" 
+              
+              sx={{
+                overflow: 'hidden',
+                whiteSpace: 'nowrap',
+                cursor: "default",
+                width: '100%',  
+                '&:hover': {
+                  whiteSpace: 'normal', 
+                  cursor: "default",
+                  overflow: 'visible',  
+                  
+                },
+              }}
+        >
+          {movie.title}
+        </Typography>
+      }
+    />
       <CardMedia
         sx={{ height: 500 }}
         image={
@@ -49,7 +64,7 @@ export default function MovieCard({ movie, action }) {
       />
       <CardContent>
         <Grid container>
-          <Grid size={{xs: 6}}>
+          <Grid size={{xs: 8}}>
             <Typography variant="h6" component="p">
               <CalendarIcon fontSize="small" />
               {movie.release_date}
@@ -66,7 +81,7 @@ export default function MovieCard({ movie, action }) {
       <CardActions disableSpacing>
 
         
-      
+    
       {action(movie)}
     
       <Link to={`/movies/${movie.id}`}>

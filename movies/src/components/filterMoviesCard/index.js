@@ -83,7 +83,7 @@ export default function FilterMoviesCard({ titleFilter, genreFilter, ratingFilte
     <Card sx={{ backgroundColor: "rgb(61, 47, 69)" }} variant="outlined">
       <CardContent>
         <Typography variant="h5" component="h1">
-          <FilterListIcon fontSize="large" onClick={handleClick} style={{ cursor: "pointer" }} /> Filter the movies.
+          <FilterListIcon fontSize="large" onClick={handleClick} style={{ cursor: "pointer" }} /> Filter Movies
         </Typography>
 
         {/* Sorting Dropdown */}
