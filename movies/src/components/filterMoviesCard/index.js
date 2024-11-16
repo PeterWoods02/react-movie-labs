@@ -7,6 +7,9 @@ import {
 import FilterListIcon from "@mui/icons-material/FilterList";  // Import Filter Icon
 import { getGenres, getActorByName, fetchActorId } from "../../api/tmdb-api";
 import Spinner from "../spinner";
+import { ThemeProvider } from '@mui/material/styles';
+import theme from '../../themes/theme';
+
 
 const formControl = { margin: 1, minWidth: 220, backgroundColor: "rgb(255, 255, 255)" };
 
@@ -36,7 +39,7 @@ export default function FilterMoviesCard({ titleFilter, genreFilter, ratingFilte
   if (genreIsError || actorIsError) return <h1>Error loading data</h1>;
 
   const genres = genreData?.genres || [];
-  if (genres.length && genres[0].name !== "All") genres.unshift({ id: "0", name: "All" });
+  if (genres.length && genres[0].name !== "All Genres") genres.unshift({ id: "0", name: "All Genres" });
   const actorsList = actorData?.results || [];
 
   const handleSearchClick = async () => {
@@ -76,7 +79,8 @@ export default function FilterMoviesCard({ titleFilter, genreFilter, ratingFilte
 
 
   return (
-    <Card sx={{ backgroundColor: "rgb(204, 204, 0)" }} variant="outlined">
+    <ThemeProvider theme={theme}>
+    <Card sx={{ backgroundColor: "rgb(61, 47, 69)" }} variant="outlined">
       <CardContent>
         <Typography variant="h5" component="h1">
           <FilterListIcon fontSize="large" onClick={handleClick} style={{ cursor: "pointer" }} /> Filter the movies.
@@ -104,7 +108,6 @@ export default function FilterMoviesCard({ titleFilter, genreFilter, ratingFilte
         />
 
         <FormControl sx={formControl}>
-          <InputLabel id="genre-label">Genre</InputLabel>
           <Select
             labelId="genre-label"
             value={genreFilter}
@@ -165,5 +168,6 @@ export default function FilterMoviesCard({ titleFilter, genreFilter, ratingFilte
         </Button>
       </CardContent>
     </Card>
+    </ThemeProvider>
   );
 }

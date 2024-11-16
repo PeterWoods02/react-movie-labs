@@ -19,7 +19,9 @@ import MovieActors from "./components/movieActors";
 import ActorMoviePage from "./pages/actorMoviePage";
 import ProfilePage from "./pages/profilePage";
 import HomePageLogIn from "./pages/homePageLogIn"; // Your home page with authentication
-
+import theme from "./themes/theme"
+import { ThemeProvider } from '@mui/material/styles';
+import CssBaseline from '@mui/material/CssBaseline';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -34,6 +36,8 @@ const queryClient = new QueryClient({
 
 const App = () => {
   return (
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
     <QueryClientProvider client={queryClient}>
       <BrowserRouter>
         <SiteHeader />
@@ -60,6 +64,7 @@ const App = () => {
       </BrowserRouter>
       <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>
+    </ThemeProvider>
   );
 };
 

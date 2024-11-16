@@ -32,13 +32,7 @@ export default function MovieCard({ movie, action }) {
   return (
     <Card>
       <CardHeader
-        avatar={
-          movie.favorite ? (
-            <Avatar sx={{ backgroundColor: 'red' }}>
-              <FavoriteIcon />
-            </Avatar>
-          ) : null
-        }
+        
         title={
           <Typography variant="h5" component="p">
             {movie.title}{" "}
@@ -63,13 +57,15 @@ export default function MovieCard({ movie, action }) {
           </Grid>
           <Grid size={{xs: 6}}>
             <Typography variant="h6" component="p">
-              <StarRateIcon fontSize="small" />
+              <StarRateIcon fontSize="small" sx={{ color: '#f0bd30' }}/>
               {"  "} {movie.vote_average}{" "}
             </Typography>
           </Grid>
         </Grid>
       </CardContent>
       <CardActions disableSpacing>
+
+        
       
       {action(movie)}
     

@@ -13,9 +13,8 @@ const AllMovies = () => {
   };
 
   return (
-    <div style={{ padding: "20px", maxWidth: "1200px", margin: "0 auto" }}>
-      <h1>Movie List</h1>
-
+    <div >
+      
       {/* Search Bar */}
       <SearchBar searchTerm={searchTerm} handleSearchChange={handleSearchChange} />
 

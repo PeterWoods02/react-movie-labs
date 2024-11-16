@@ -5,6 +5,7 @@ function SearchBar({ searchTerm, handleSearchChange }) {
 
   return (
     <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+      <h1>Search Movies</h1>
       <input
         type="text"
         placeholder="Search for movies..."
