@@ -87,9 +87,7 @@ const SiteHeader = () => {
           <Typography variant="h4" sx={{ flexGrow: 1 }}>
             TMDB Client
           </Typography>
-          <Typography variant="h6" sx={{ flexGrow: 1 }}>
-            All you ever wanted to know about Movies!
-          </Typography>
+        
 
           {/* Render menu for larger screens, else render hamburger menu */}
           {!isMobile ? (

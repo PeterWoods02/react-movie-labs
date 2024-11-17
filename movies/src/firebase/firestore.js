@@ -1,5 +1,5 @@
 import { db, auth } from "./firebaseConfig"; 
-import { doc, setDoc, updateDoc, arrayUnion, getDoc, collection, getDocs, query, where } from "firebase/firestore"; 
+import { doc, setDoc, updateDoc, arrayUnion, getDoc } from "firebase/firestore"; 
 import {getMovie} from "../api/tmdb-api";
 
 // Function to add a movie to the user's playlist
@@ -65,4 +65,8 @@ export const addToPlaylist = async (movie) => {
       throw new Error(error.message);
     }
   };
+
+
+
+  
   

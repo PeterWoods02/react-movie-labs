@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { getAuth } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
-import { Button, Typography, Container, Grid } from "@mui/material";
+import { Button, Typography, Container } from "@mui/material";
 import { getPlaylistMovies } from "../firebase/firestore"; // Import the function
 import RemoveFromPlaylist from "../components/cardIcons/removeFromPlaylist"; // Import the RemoveFromPlaylist component
 import PageTemplate from "../components/templateMovieListPageNoFilter"; // Import your PageTemplate
@@ -38,17 +38,9 @@ const ProfilePage = () => {
           <Typography variant="h4" gutterBottom>
             Profile Page
           </Typography>
-          <Typography variant="h6">Welcome, {user.displayName || "User"}!</Typography>
-          <Typography variant="body1">Email: {user.email}</Typography>
-          {user.photoURL && (
-            <img
-              src={user.photoURL}
-              alt="profile"
-              style={{ width: 100, height: 100, borderRadius: "50%", marginTop: 20 }}
-            />
-          )}
-
-          <Typography variant="h6" gutterBottom>My Playlist Movies</Typography>
+          <Typography variant="h6">Welcome, {user.email || "User"}!</Typography>
+          
+          <Typography variant="h6" gutterBottom>My Saved Playlist</Typography>
           
           {/* Use PageTemplate to display movies */}
           <PageTemplate

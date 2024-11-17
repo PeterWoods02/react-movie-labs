@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useQuery } from "react-query";
 import {
-  Card, CardContent, Typography, InputLabel, MenuItem, TextField,
+  Card, CardContent, Typography, MenuItem, TextField,
   FormControl, Select, Rating, Button, Menu
 } from "@mui/material";
 import FilterListIcon from "@mui/icons-material/FilterList";  // Import Filter Icon
@@ -99,25 +99,38 @@ export default function FilterMoviesCard({ titleFilter, genreFilter, ratingFilte
         </Menu>
 
         <TextField
-          sx={formControl}
-          label="Search field"
-          type="search"
-          variant="filled"
-          value={titleFilter}
-          onChange={(e) => onUserInput("name", e.target.value)}
-        />
+  sx={{
+    ...formControl,  
+    '& .MuiInputBase-input': {
+      color: '#333333',  
+    },
+  }}
+  label="Search field"
+  type="search"
+  variant="filled"
+  value={titleFilter}
+  onChange={(e) => onUserInput("name", e.target.value)}
+/>
 
-        <FormControl sx={formControl}>
-          <Select
-            labelId="genre-label"
-            value={genreFilter}
-            onChange={(e) => onUserInput("genre", e.target.value)}
-          >
-            {genres.map((genre) => (
-              <MenuItem key={genre.id} value={genre.id}>{genre.name}</MenuItem>
-            ))}
-          </Select>
-        </FormControl>
+<FormControl sx={formControl}>
+  <Select
+    labelId="genre-label"
+    value={genreFilter}
+    onChange={(e) => onUserInput("genre", e.target.value)}
+    sx={{
+      '& .MuiSelect-select': {
+        color: '#8f8f8f', 
+      }
+    }}
+  >
+    {genres.map((genre) => (
+      <MenuItem key={genre.id} value={genre.id}>
+        {genre.name}
+      </MenuItem>
+    ))}
+  </Select>
+</FormControl>
+
 
         <Typography variant="subtitle1">Rating ({ratingFilter || "0"} - 10)</Typography>
         <Rating
@@ -131,7 +144,12 @@ export default function FilterMoviesCard({ titleFilter, genreFilter, ratingFilte
         />
 
         <TextField
-          sx={formControl}
+        sx={{
+          ...formControl,  
+          '& .MuiInputBase-input': {
+            color: '#333333',  
+          },
+        }}
           label="Search by Actor"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
