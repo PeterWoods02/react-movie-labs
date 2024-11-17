@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { getAuth } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
-import { Button, Typography, Container } from "@mui/material";
+import { Button, Typography, Container, Box } from "@mui/material";
 import { getPlaylistMovies } from "../firebase/firestore"; // Import the function
 import RemoveFromPlaylist from "../components/cardIcons/removeFromPlaylist"; // Import the RemoveFromPlaylist component
 import PageTemplate from "../components/templateMovieListPageNoFilter"; // Import your PageTemplate
@@ -32,25 +32,26 @@ const ProfilePage = () => {
   }, [navigate]);
 
   return (
-    <Container>
+    <Container maxWidth={false} sx={{ padding: 0 }}>
       {user ? (
         <>
-          <Typography variant="h4" gutterBottom>
+        <Box sx={{ 
+              display: 'flex', 
+              flexDirection: 'column', 
+              alignItems: 'flex-start', 
+              padding: '16px 24px', 
+              backgroundColor: '#1d1d1d', 
+              borderRadius: '8px', 
+              marginBottom: '24px' 
+            }}>
+          <Typography variant="h4" gutterBottom sx={{ color: '#bb86fc', fontWeight: 700 }}>
             Profile Page
           </Typography>
           <Typography variant="h6">Welcome, {user.email || "User"}!</Typography>
-          
+          </Box>
           <Typography variant="h6" gutterBottom>My Saved Playlist</Typography>
           
-          {/* Use PageTemplate to display movies */}
-          <PageTemplate
-            title="My Playlist"
-            movies={movies} // Pass the movies array to the PageTemplate
-            action={(movie) => (
-              <RemoveFromPlaylist movieId={movie.id} /> // Render RemoveFromPlaylist button for each movie
-            )}
-          />
-
+        
           <Button
             variant="contained"
             color="primary"
@@ -59,12 +60,32 @@ const ProfilePage = () => {
               auth.signOut(); // Log out
               navigate("/movies/homePageLogIn"); // Redirect to login
             }}
-            sx={{ marginTop: 2 }}
-          >
+          sx={{
+              position: 'fixed', 
+              bottom: 16, 
+              right: 16, 
+              zIndex: 1000, 
+             }}
+              >
             Log Out
-          </Button>
+            </Button>
+
+
+          {/* Use PageTemplate to display movies */}
+          <PageTemplate
+            title="My Playlist"
+            movies={movies} // Pass the movies array to the PageTemplate
+            action={(movie) => (
+              <RemoveFromPlaylist movieId={movie.id} /> // Render RemoveFromPlaylist button for each movie
+            )}
+          />
         </>
-      ) : (
+
+        
+      ) 
+      
+      : (
+        
         <Typography variant="body1">Loading...</Typography>
       )}
     </Container>
