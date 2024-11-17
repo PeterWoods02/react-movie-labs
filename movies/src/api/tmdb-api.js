@@ -221,21 +221,6 @@ export const getActorMoviesByName = async (actorName) => {
 
 
 
-
-export const getActorAndMovies = async (actorName) => {
-  try {
-    // Step 1: Search for the actor by name
-    const actor = await getActorByName(actorName);
-    
-    // Step 2: Get the movies for the actor using their ID
-    const movies = await getMoviesForActor(actor.id);
-    
-    return movies; // Return the list of movies
-  } catch (error) {
-    console.error("Error fetching actor movies:", error);
-  }
-};
-
 // api.js
 export const fetchActorId = async (actorName) => {
   try {
