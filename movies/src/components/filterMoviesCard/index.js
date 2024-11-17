@@ -76,7 +76,16 @@ export default function FilterMoviesCard({ titleFilter, genreFilter, ratingFilte
     handleClose();  // Close the menu after selection
   };
 
-
+  // Clear all filters
+  const handleClearFilters = () => {
+   setSearchTerm("");
+   setActorFilter("");
+   setLocalRating(0);
+   onUserInput("name", "");
+   onUserInput("genre", "0");
+   onUserInput("rating", "0");
+   onUserInput("actor", null);
+  };
 
   return (
     <ThemeProvider theme={theme}>
@@ -177,13 +186,21 @@ export default function FilterMoviesCard({ titleFilter, genreFilter, ratingFilte
        
 
         <Button
-          sx={{ paddingTop: "16px" }}
+          sx={{ width :"30%",marginRight: "4%",}}
           variant="contained"
           color="primary"
           onClick={handleSearchClick}
         >
           Search
         </Button>
+        <Button
+              sx={{ width :"30%" }}
+              variant="outlined"
+              color="error"
+              onClick={handleClearFilters}
+            >
+              Clear 
+            </Button>
       </CardContent>
     </Card>
     </ThemeProvider>
