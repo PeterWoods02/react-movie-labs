@@ -1,23 +1,22 @@
 import React from "react";
 import { useQuery } from "react-query";
-import { useParams } from "react-router-dom"; // Import useParams
-import { getMovieActors } from "../../api/tmdb-api"; 
-import Spinner from '../spinner';
+import { useParams } from "react-router-dom";
+import { getMovieActors } from "../../api/tmdb-api";
+import Spinner from "../spinner";
 import Typography from "@mui/material/Typography";
-import Paper from "@mui/material/Paper";
-import ActorCard from "../actorCard";
-
+import Box from "@mui/material/Box";
+import ActorDisplay from "../actorDisplay";
 
 const MovieActors = () => {
-    const { id } = useParams(); //useParams to get the movie ID from the URL
+    const { id } = useParams();
     const { data: movieActors, isLoading, isError, error } = useQuery(
-        ['movieActors', id], // make id into query too
-        () => getMovieActors(id), 
+        ["movieActors", id],
+        () => getMovieActors(id),
         {
-          staleTime: 1000 * 60 * 60 * 24, // Cache data for 24 hours
-          cacheTime: 1000 * 60 * 60 * 24, // Cache data for 24 hours
-          refetchOnWindowFocus: false, // Do not refetch on window focus
-        } 
+            staleTime: 1000 * 60 * 60 * 24,
+            cacheTime: 1000 * 60 * 60 * 24,
+            refetchOnWindowFocus: false,
+        }
     );
 
     if (isLoading) {
@@ -28,27 +27,30 @@ const MovieActors = () => {
         return <div>Error: {error.message}</div>;
     }
 
-    const movies = movieActors.results; 
-
     return (
         <>
             <Typography variant="h5" component="h3" sx={{ marginTop: "16px" }}>
                 Cast Members
             </Typography>
-            <Paper component="ul" sx={{
-                display: "flex",
-                flexWrap: "wrap",
-                listStyle: "none",
-                padding: 1.5,
-                margin: 0,
-            }}>
-        
-                {movieActors?.cast.slice(0, 10).map((actor) => ( // Map over the 'cast' array in 'movieActors', displaying only the first 10 actors.
-                    <li key={actor.id}>
-                        <ActorCard actor={actor} />
-                    </li>
+            <Box
+                sx={{
+                    display: "flex",
+                    overflowX: "auto", // Enable horizontal scrolling
+                    gap: 2, 
+                    padding: 2,
+                    whiteSpace: "nowrap", 
+                    "&::-webkit-scrollbar": { height: 8 }, // Style the scrollbar
+                    "&::-webkit-scrollbar-thumb": {
+                        backgroundColor: "#888888",
+                        borderRadius: 4,
+                    },
+                    "&::-webkit-scrollbar-thumb:hover": { backgroundColor: "#555555" },
+                }}
+            >
+                {movieActors?.cast.slice(0, 10).map((actor) => (
+                    <ActorDisplay key={actor.id} actor={actor} />
                 ))}
-            </Paper>
+            </Box>
         </>
     );
 };
