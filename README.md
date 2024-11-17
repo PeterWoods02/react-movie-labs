@@ -22,6 +22,7 @@ This repository contains a React-based movie web applicaion, using the TMDB API 
 + New Styling
 + Page to search entire database of movies
 + Pagination
++ Snackbar confirmations
 
 
 ## Setup requirements.
@@ -72,3 +73,4 @@ This repository contains a React-based movie web applicaion, using the TMDB API 
 https://mui.com/material-ui/react-pagination/ - used to add pagination to /src/components/movieListPageSearch
 https://firebase.google.com/ - used for firebase authentication and firestore /src/firebase
 https://mui.com/material-ui/customization/theming/ - To custom make my /src/themes/theme.js 
+https://mui.com/material-ui/react-snackbar/ - Confirmation with snackbar /src/components/cardIcons
